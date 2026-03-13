@@ -87,25 +87,33 @@ To run fully open-source with local models:
 docker compose up --build
 ```
 
-Or run vLLM standalone with **Qwen2.5-Coder** (recommended for the code agent):
+Or run vLLM standalone with **Qwen3.5** (recommended for the code agent):
 ```bash
 pip install vllm
-vllm serve Qwen/Qwen2.5-Coder-7B-Instruct \
+vllm serve Qwen/Qwen3.5-9B \
   --port 8000 \
-  --max-model-len 8192 \
+  --max-model-len 32768 \
+  --gpu-memory-utilization 0.5 \
   --enable-auto-tool-choice \
-  --tool-call-parser hermes
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3
 ```
 
-The `--enable-auto-tool-choice` and `--tool-call-parser hermes` flags are **required** for the code agent's function calling to work with vLLM.
+Key flags:
+- `--gpu-memory-utilization 0.5` — uses 50% of GPU VRAM (24GB on L40S)
+- `--tool-call-parser qwen3_coder` — **required** for the code agent's function calling
+- `--reasoning-parser qwen3` — enables Qwen3.5's native thinking/reasoning mode
+- `--max-model-len 32768` — balanced context length for 50% VRAM budget
 
-#### Qwen Model Options
+#### Qwen3.5 Model Options
 
-| Model | VRAM | Quality | Speed |
-|-------|------|---------|-------|
-| `Qwen/Qwen2.5-Coder-1.5B-Instruct` | ~4 GB | Testing only | Fast |
-| **`Qwen/Qwen2.5-Coder-7B-Instruct`** | **~16 GB** | **Good (recommended)** | **Balanced** |
-| `Qwen/Qwen2.5-Coder-32B-Instruct` | ~70 GB | Near-commercial | Slow |
+| Model | Type | VRAM (FP16) | Best For |
+|-------|------|-------------|----------|
+| `Qwen/Qwen3.5-4B` | Dense | ~8 GB | Testing / low-resource |
+| **`Qwen/Qwen3.5-9B`** | **Dense** | **~18 GB** | **L40S @ 50% (recommended)** |
+| `Qwen/Qwen3.5-27B` | Dense | ~54 GB | Full L40S or multi-GPU |
+| `Qwen/Qwen3.5-35B-A3B` | MoE | ~70 GB (3B active) | High quality, needs more VRAM for weights |
+| `Qwen/Qwen3.5-122B-A10B` | MoE | ~244 GB | Multi-node |
 
 ## Features
 
