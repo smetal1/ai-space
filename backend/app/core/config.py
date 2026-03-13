@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     # vLLM (OpenAI-compatible endpoint for open-source models)
     vllm_base_url: str = "http://localhost:8000/v1"
-    vllm_model: str = "meta-llama/Llama-3.1-8B-Instruct"
+    vllm_model: str = "Qwen/Qwen2.5-Coder-7B-Instruct"
     vllm_api_key: str = "EMPTY"
 
     # Default provider: "claude" or "vllm"

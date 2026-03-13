@@ -87,11 +87,25 @@ To run fully open-source with local models:
 docker compose up --build
 ```
 
-Or run vLLM standalone:
+Or run vLLM standalone with **Qwen2.5-Coder** (recommended for the code agent):
 ```bash
 pip install vllm
-vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000
+vllm serve Qwen/Qwen2.5-Coder-7B-Instruct \
+  --port 8000 \
+  --max-model-len 8192 \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes
 ```
+
+The `--enable-auto-tool-choice` and `--tool-call-parser hermes` flags are **required** for the code agent's function calling to work with vLLM.
+
+#### Qwen Model Options
+
+| Model | VRAM | Quality | Speed |
+|-------|------|---------|-------|
+| `Qwen/Qwen2.5-Coder-1.5B-Instruct` | ~4 GB | Testing only | Fast |
+| **`Qwen/Qwen2.5-Coder-7B-Instruct`** | **~16 GB** | **Good (recommended)** | **Balanced** |
+| `Qwen/Qwen2.5-Coder-32B-Instruct` | ~70 GB | Near-commercial | Slow |
 
 ## Features
 
