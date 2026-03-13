@@ -5,6 +5,7 @@ const views: { value: View; label: string }[] = [
   { value: "canvas", label: "Canvas" },
   { value: "code", label: "Code" },
   { value: "split", label: "Split" },
+  { value: "agent", label: "Agent" },
 ];
 
 const providers: { value: Provider; label: string }[] = [

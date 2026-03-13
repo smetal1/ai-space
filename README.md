@@ -10,12 +10,15 @@ AI-powered platform with a **Google Canvas-like editor** and **VS Code-like codi
 │  ┌──────────────┬──────────────┬──────────────────┐ │
 │  │ Canvas       │ Code Editor  │ Chat Panel       │ │
 │  │ (TipTap)     │ (Monaco)     │ (Streaming)      │ │
-│  └──────────────┴──────────────┴──────────────────┘ │
+│  ├──────────────┴──────────────┴──────────────────┤ │
+│  │ Code Agent (autonomous tool-calling AI)        │ │
+│  └────────────────────────────────────────────────┘ │
 │                     │ SSE / WebSocket               │
 │  ┌──────────────────┴──────────────────────────────┐│
 │  │  Backend (FastAPI)                              ││
-│  │  ├── Claude API (Anthropic SDK)                 ││
-│  │  └── vLLM (OpenAI-compatible, open-source LLMs)││
+│  │  ├── Claude API (Anthropic SDK + tool_use)      ││
+│  │  ├── vLLM (OpenAI-compatible, open-source LLMs)││
+│  │  └── Agent Loop (plan → tool → observe → repeat)││
 │  └─────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────┘
 ```
@@ -30,6 +33,7 @@ AI-powered platform with a **Google Canvas-like editor** and **VS Code-like codi
 | Backend | FastAPI + Uvicorn | Async API server with streaming |
 | AI (Commercial) | Claude API (Anthropic SDK) | High-quality AI generation |
 | AI (Open Source) | vLLM + any HuggingFace model | Self-hosted open-source models |
+| Code Agent | Claude tool_use / OpenAI function calling | Autonomous coding agent with tool loop |
 | Streaming | SSE + WebSocket | Real-time token streaming |
 | Deployment | Docker Compose | One-command deployment |
 
@@ -107,6 +111,14 @@ vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000
 - Full message history
 - Token-by-token streaming
 
+### Code Agent (Autonomous)
+- Full agentic loop: plan → execute tools → observe results → repeat
+- **6 tools**: `read_file`, `write_file`, `edit_file`, `list_files`, `search_files`, `run_command`
+- Sandboxed workspace — agent operates in an isolated directory
+- Real-time event streaming (see tool calls, results, and agent thinking live)
+- Works with both Claude (native tool_use) and vLLM (OpenAI function calling)
+- Up to 20 iterations per task
+
 ### Provider Switching
 - Toggle between Claude and vLLM from the header
 - Same interface, different backends
@@ -118,7 +130,9 @@ vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000
 | POST | `/api/chat` | Chat with streaming (SSE) |
 | POST | `/api/canvas` | Canvas AI actions (SSE) |
 | POST | `/api/code` | Code AI actions (SSE) |
+| POST | `/api/agent` | Code agent with tool calling (SSE) |
 | WS | `/ws/chat` | Chat via WebSocket |
 | WS | `/ws/canvas` | Canvas via WebSocket |
 | WS | `/ws/code` | Code via WebSocket |
+| WS | `/ws/agent` | Agent via WebSocket |
 | GET | `/health` | Health check |

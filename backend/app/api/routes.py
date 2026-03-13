@@ -3,7 +3,8 @@ import json
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse
 
-from app.models.schemas import CanvasAction, ChatRequest, CodeAction
+from app.models.schemas import AgentRequest, CanvasAction, ChatRequest, CodeAction
+from app.services.agent_service import run_agent
 from app.services.llm_service import canvas_action, code_action, stream_chat
 
 router = APIRouter()
@@ -43,6 +44,16 @@ async def code(req: CodeAction):
             req.action, req.code, req.language, req.instruction, req.provider
         ):
             yield f"data: {json.dumps({'text': chunk})}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@router.post("/api/agent")
+async def agent(req: AgentRequest):
+    async def event_stream():
+        async for event in run_agent(req.task, provider=req.provider):
+            yield f"data: {json.dumps(event)}\n\n"
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
@@ -99,5 +110,20 @@ async def ws_code(websocket: WebSocket):
             ):
                 await websocket.send_json({"type": "chunk", "text": chunk})
             await websocket.send_json({"type": "done"})
+    except WebSocketDisconnect:
+        pass
+
+
+@router.websocket("/ws/agent")
+async def ws_agent(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+            async for event in run_agent(
+                data.get("task", ""),
+                provider=data.get("provider"),
+            ):
+                await websocket.send_json(event)
     except WebSocketDisconnect:
         pass

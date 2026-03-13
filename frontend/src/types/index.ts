@@ -1,6 +1,6 @@
 export type Provider = "claude" | "vllm";
 
-export type View = "canvas" | "code" | "split";
+export type View = "canvas" | "code" | "split" | "agent";
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -20,4 +20,18 @@ export interface CodeActionPayload {
   language?: string;
   instruction?: string;
   provider?: Provider;
+}
+
+export interface AgentRequestPayload {
+  task: string;
+  provider?: Provider;
+}
+
+export interface AgentEvent {
+  type: "user" | "text" | "tool_call" | "tool_result" | "done" | "error" | "thinking";
+  text?: string;
+  name?: string;
+  args?: Record<string, unknown>;
+  result?: string;
+  id?: string;
 }

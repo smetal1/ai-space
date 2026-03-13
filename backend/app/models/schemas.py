@@ -25,3 +25,8 @@ class CodeAction(BaseModel):
     language: str = "python"
     instruction: str = ""
     provider: str | None = None
+
+
+class AgentRequest(BaseModel):
+    task: str
+    provider: str | None = None

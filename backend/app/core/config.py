@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     # Default provider: "claude" or "vllm"
     default_provider: str = "claude"
 
+    # Agent workspace directory
+    agent_workspace: str = "/tmp/agent-workspace"
+
     # CORS
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
 

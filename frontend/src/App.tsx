@@ -3,9 +3,21 @@ import Header from "@/components/layout/Header";
 import CanvasEditor from "@/components/canvas/CanvasEditor";
 import CodeEditor from "@/components/editor/CodeEditor";
 import ChatPanel from "@/components/chat/ChatPanel";
+import AgentPanel from "@/components/agent/AgentPanel";
 
 export default function App() {
   const view = useAppStore((s) => s.view);
+
+  if (view === "agent") {
+    return (
+      <>
+        <Header />
+        <div style={styles.main}>
+          <AgentPanel />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
