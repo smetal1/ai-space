@@ -6,6 +6,7 @@ const views: { value: View; label: string }[] = [
   { value: "code", label: "Code" },
   { value: "split", label: "Split" },
   { value: "agent", label: "Agent" },
+  { value: "pricing", label: "Pricing" },
 ];
 
 const providers: { value: Provider; label: string }[] = [

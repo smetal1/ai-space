@@ -1,6 +1,6 @@
 export type Provider = "claude" | "vllm";
 
-export type View = "canvas" | "code" | "split" | "agent";
+export type View = "canvas" | "code" | "split" | "agent" | "pricing";
 
 export interface ChatMessage {
   role: "user" | "assistant";

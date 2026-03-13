@@ -4,6 +4,7 @@ import CanvasEditor from "@/components/canvas/CanvasEditor";
 import CodeEditor from "@/components/editor/CodeEditor";
 import ChatPanel from "@/components/chat/ChatPanel";
 import AgentPanel from "@/components/agent/AgentPanel";
+import PricingPage from "@/components/pricing/PricingPage";
 
 export default function App() {
   const view = useAppStore((s) => s.view);
@@ -14,6 +15,17 @@ export default function App() {
         <Header />
         <div style={styles.main}>
           <AgentPanel />
+        </div>
+      </>
+    );
+  }
+
+  if (view === "pricing") {
+    return (
+      <>
+        <Header />
+        <div style={styles.main}>
+          <PricingPage />
         </div>
       </>
     );
